@@ -1,7 +1,13 @@
     - name: install jdk
       yum: 
-        name: openjdk-11-jdk
+        name: "{{ item }}"
         state: present
+      loop:
+        - java-11-openjdk
+        - java-17-openjdk
+        - java-21-openjdk
+
+
 
     - name: creating a directory
       file:
