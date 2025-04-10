@@ -1,12 +1,22 @@
     - name: install jdk
       yum: 
-        name: openjdk-11-jdk
+        name: "{{ item }}"
         state: present
+      loop:
+        - java-11-openjdk
+        - java-17-openjdk
+        - java-21-openjdk
 
+    - name: creating a user
+      user:
+        name: tomcat
+        state: present
+        home: /opt/tomcat
     - name: creating a directory
       file:
         path: /opt/tomcat
         state: directory
+        owner: tomcat
         mode: 0755
         
     - name: downloading tomcat
@@ -16,6 +26,11 @@
        remote_src: yes
        extra_opts: [--strip-components=1]
 
+    - name: changing file permissions
+      file:
+        path: /opt/tomcat
+        owner: tomcat
+        recurse: yes
     - name: creating tomcat service file
       copy:
         dest: /etc/systemd/system/tomcat.service
@@ -25,7 +40,7 @@
           After=network.target
           [Service]
           Type=forking
-          Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.20.1.1-2.el9.x86_64"
+          User=tomcat
           Environment="CATALINA_BASE=/opt/tomcat"
           Environment="CATALINA_HOME=/opt/tomcat"
           Environment="CATALINA_PID=/opt/tomcat/temp/tomcat.pid"
