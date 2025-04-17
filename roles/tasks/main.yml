@@ -1,16 +1,7 @@
     - name: install jdk
       yum: 
-        name: "{{ item }}"
+        name: java-17-openjdk
         state: present
-      loop:
-        - java-11-openjdk
-        - java-17-openjdk
-        - java-21-openjdk
-
-    - name: start tomcat service
-      systemd:
-           name: tomcat
-           state: started
-           enabled: yes
       
+    
  
